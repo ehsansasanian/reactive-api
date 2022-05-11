@@ -15,6 +15,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static org.springframework.http.MediaType.TEXT_EVENT_STREAM_VALUE;
@@ -44,7 +45,7 @@ class ReactiveController {
 class IntervalProducer {
     public Flux<DemoResponse> produce(String name) {
         return Flux.fromStream(Stream.generate(() -> "Hi " + name + ",   This message produced at " + Instant.now()))
-                .map(DemoResponse::new)
+                .map(m -> new DemoResponse(UUID.randomUUID().toString(), m))
                 .delayElements(Duration.ofSeconds(1));
     }
 }
@@ -53,5 +54,6 @@ class IntervalProducer {
 @AllArgsConstructor
 @NoArgsConstructor
 class DemoResponse {
+    private String id;
     private String message;
 }
